@@ -62,10 +62,17 @@ func main() {
 	defer db.Close() // clean up when we’re done
 	// Adapt our handle function using withDB
 
-	pageId := "informer.upc"
-	pageAccessToken := "EAACEdEose0cBAK74yl9gHSB4Yfxz2rJXtvD49TBZCc1qTeKkGKC1jWOeZAygPDQlzGcDwtPcOambChqJkJRLiviFtM3eZCEFPV5NzYWZBa7ESQ4GXFZAHFpvjZBzYFghbUOwX5J7SoohBQdH7jtiEcihUclUZAb4C8G7qAMzvYpbmakQTUt9ZBTvUWPX4lIdM8w8TA59eMGIvQZDZD"
+	pageId := os.Getenv("PAGE_ID")
+	if pageId == "" {
+		pageId = "informer.upc"
+	}
 
-	go startInputService(pageId, pageAccessToken)
+	pageAccessToken := os.Getenv("ACCESS_TOKEN")
+	if pageAccessToken == "" {
+		pageAccessToken = "EAACEdEose0cBAMehZCI2ZAzvGSptaogWDsvNaoOFRDX1s9dwysvAp4XsWTH9C6J2CjgLLzeJtazRJ6axiQF3hJuukFgYEyP4ASl2H3wBDnKImbsLQaKZAQBRP5oTTKvQFEOyXzcxkRgngZAciaFWTcmjRUj9DIlXQ1mZCQox5ZCnxVrBM3ZBGyl5Kb0TurHAlShh1vaLacPIgZDZD"
+	}
+
+	go startInputService(db, pageId, pageAccessToken)
 
 	h := Adapt(http.HandlerFunc(handle), withDB(db))
 	// add the handler
