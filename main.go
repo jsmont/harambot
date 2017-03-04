@@ -50,7 +50,11 @@ func handle(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	// connect to the database
-	db, err := mgo.Dial("localhost")
+	mongoUrl := os.Getenv("MONGO_URL")
+	if mongoUrl == "" {
+		mongoUrl = "localhost"
+	}
+	db, err := mgo.Dial(mongoUrl)
 	if err != nil {
 		log.Fatal("cannot dial mongo", err)
 	}
