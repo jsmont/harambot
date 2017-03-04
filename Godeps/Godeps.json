@@ -1,6 +1,6 @@
 {
 	"ImportPath": "github.com/jsmont/harambot",
-	"GoVersion": "go1.5",
+	"GoVersion": "go1.8",
 	"GodepVersion": "v79",
 	"Deps": [
 		{
