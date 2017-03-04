@@ -58,8 +58,15 @@ func main() {
 	if err != nil {
 		log.Fatal("cannot dial mongo", err)
 	}
+
 	defer db.Close() // clean up when we’re done
 	// Adapt our handle function using withDB
+
+	pageId := "informer.upc"
+	pageAccessToken := "EAACEdEose0cBAK74yl9gHSB4Yfxz2rJXtvD49TBZCc1qTeKkGKC1jWOeZAygPDQlzGcDwtPcOambChqJkJRLiviFtM3eZCEFPV5NzYWZBa7ESQ4GXFZAHFpvjZBzYFghbUOwX5J7SoohBQdH7jtiEcihUclUZAb4C8G7qAMzvYpbmakQTUt9ZBTvUWPX4lIdM8w8TA59eMGIvQZDZD"
+
+	go startInputService(pageId, pageAccessToken)
+
 	h := Adapt(http.HandlerFunc(handle), withDB(db))
 	// add the handler
 	http.Handle("/comments", context.ClearHandler(h))
