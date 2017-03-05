@@ -73,7 +73,7 @@ function GetFormattedDate(time) {
     var year = (todayTime.getFullYear());
     var hour = todayTime.getHours();
     var minute = todayTime.getMinutes();
-    return month + "/" + day + "/" + year + " - " + hour + ":" + minute;
+    return month + "/" + day + "/" + year + " - " + (hour < 10? "0" + hour : hour) + ":" + (minute < 10? "0" + minute : minute);
 }
 /*
 a = [

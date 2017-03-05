@@ -13,9 +13,10 @@ body{
     padding-top: 15px;
     padding-bottom: 15px;
 }
+/*
 .navbar{
-    position: fixed;
-}
+    position: fixed !important;
+}*/
 .navbar-text{
     font-family: 'VT323', monospace !important;
     font-size: 35px;
@@ -32,5 +33,6 @@ dt,dd{
 }
 
 .container {
+    padding-top: 100px;
     padding-bottom: 200px;
 }
