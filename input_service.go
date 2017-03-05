@@ -51,9 +51,7 @@ func (p *Report) save(db *mgo.Collection) {
 	exists := Report{}
 
 	if err := db.Find(bson.M{"FacebookId": p.FacebookId}).One(&exists); err != nil {
-		panic(err)
-	}
-	if true {
+		fmt.Println(err)
 		if err := db.Insert(&p); err != nil {
 			panic(err)
 		}

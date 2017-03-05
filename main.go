@@ -56,7 +56,7 @@ func main() {
 		mongoUrl = "localhost/harambot"
 	}
 	session, err := mgo.Dial(mongoUrl)
-	db := session.DB().C("report_info")
+	db := session.DB("").C("report_info")
 
 	if err != nil {
 		log.Fatal("cannot dial mongo", err)
