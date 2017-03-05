@@ -49,6 +49,14 @@ func handle(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+
+	 fs := http.FileServer(http.Dir("static"))
+	  http.Handle("/", fs)
+
+	  log.Println("Listening...")
+	  http.ListenAndServe(":8080", nil)
+
+
 	// connect to the database
 	mongoUrl := os.Getenv("SCALINGO_MONGO_URL")
 	fmt.Println(mongoUrl)
