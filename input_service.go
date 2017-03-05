@@ -16,6 +16,7 @@ type User struct {
 const (
 	ReportStateUnchecked     = iota
 	ReportStateAIDiscarted   = iota
+	ReportStateAISelected    = iota
 	ReportStateUserDiscarted = iota
 	ReportStateUserAccepted  = iota
 )

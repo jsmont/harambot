@@ -77,6 +77,7 @@ func main() {
 	}
 
 	go startInputService(db, pageId, pageAccessToken)
+	go startValidatorService(db)
 
 	h := Adapt(http.HandlerFunc(handle), withDB(db))
 	// add the handler
@@ -120,7 +121,6 @@ func handleInsert(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
 	log.Println("Added")
 
 	// redirect to it
