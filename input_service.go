@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type User struct {
@@ -17,7 +18,7 @@ type Report struct {
 	FacebookId string    `json:"facebook_id"`
 }
 
-func startInputService(db *mgo.Session, pageId string, pageAccessToken string) {
+func startInputService(db *mgo.Collection, pageId string, pageAccessToken string) {
 
 	FacebookPosts, _ := getFacebookPosts(pageId, pageAccessToken, "")
 
@@ -45,12 +46,20 @@ func startInputService(db *mgo.Session, pageId string, pageAccessToken string) {
 	}
 }
 
-func (p *Report) save(db *mgo.Session) {
+func (p *Report) save(db *mgo.Collection) {
 
-	if err := db.DB("harambot").C("report_info").Insert(&p); err != nil {
+	exists := Report{}
+
+	if err := db.Find(bson.M{"FacebookId": p.FacebookId}).One(&exists); err != nil {
 		panic(err)
 	}
+	if true {
+		if err := db.Insert(&p); err != nil {
+			panic(err)
+		}
 
-	fmt.Println("Added new report to database")
-
+		fmt.Println("Added new report to database")
+	} else {
+		fmt.Println("Report repeated")
+	}
 }
