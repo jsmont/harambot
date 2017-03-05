@@ -13,12 +13,20 @@ body{
     padding-top: 15px;
     padding-bottom: 15px;
 }
-#navbrand{
-    font-family: 'VT323', monospace;
+.navbar{
+    position: fixed;
+}
+.navbar-text{
+    font-family: 'VT323', monospace !important;
     font-size: 35px;
-    padding-left: 20px;
-    color: #5bc0de;
+    color: #5bc0de !important;
 }
 dt,dd{
     font-size: 15px;
+}
+#navimage{
+    margin-bottom: 5px;
+    margin-left: 20px;
+    width: 35px;
+    height: 35px;
 }
