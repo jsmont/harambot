@@ -15,7 +15,7 @@ type User struct {
 type Report struct {
 	Message    string    `json:"message"`
 	Timestamp  time.Time `json:"timestamp"`
-	FacebookId string    `json:"facebook_id"`
+	FacebookId string    `json:"facebookid"`
 }
 
 func startInputService(db *mgo.Collection, pageId string, pageAccessToken string) {
@@ -50,7 +50,7 @@ func (p *Report) save(db *mgo.Collection) {
 
 	exists := Report{}
 
-	if err := db.Find(bson.M{"FacebookId": p.FacebookId}).One(&exists); err != nil {
+	if err := db.Find(bson.M{"facebookid": p.FacebookId}).One(&exists); err != nil {
 		fmt.Println(err)
 		if err := db.Insert(&p); err != nil {
 			panic(err)
