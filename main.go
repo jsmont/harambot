@@ -46,6 +46,7 @@ func main() {
 	}
 	session, err := mgo.Dial(mongoUrl)
 	db := session.DB("").C("report_info")
+	fmt.Println("DB initialized")
 
 	if err != nil {
 		log.Fatal("cannot dial mongo", err)
@@ -61,11 +62,13 @@ func main() {
 
 	pageAccessToken := os.Getenv("ACCESS_TOKEN")
 	if pageAccessToken == "" {
-		pageAccessToken = "EAACEdEose0cBAAEQQwICorU1aKIt069OejnoADBDiUIAudPaZC4SgvAf3lMLutkDFFlvmUOIH9tqw2dH4zFWCml5itx1m01L397Nf63XjAoVlooNZAupjwBLsbZCqM782tYFFNTW3odI8F8EZALT5z1Wm9JSNoj3Kqhjzlue3InU7PdyJKBn"
+		pageAccessToken = "EAACEdEose0cBANEZA4nMheX6VWrPqUWo2YdzRURFEAhWUYhxmUkaZBqZB1pJ1OAr6eUO2quWN0gRTNZCAVzs176cGV5xT3n1BUV8FjmWyZC6iCHg5rXcW0wdEubVZAxGnMSnW6XG8m5a6D3p2eVoqDSamHbZCqSvf69tJuTNoYSDJwI2e7WwIHLSEMymQvN5RgZD"
 	}
 
 	go startInputService(db, pageId, pageAccessToken)
 	go startValidatorService(db)
+
+	fmt.Println("Services initialized")
 
 	// add the handler
 	http.Handle("/potentiallist", Adapt(http.HandlerFunc(potentialListHandler), withDB(db), context.ClearHandler))
@@ -81,9 +84,13 @@ func main() {
 	}
 }
 
+type listRequest struct {
+	Offset int `json="offset"`
+}
+
 func potentialListHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
-	case "GET":
+	case "POST":
 		handleServePotentialList(w, r)
 	default:
 		http.Error(w, "Not supported", http.StatusMethodNotAllowed)
@@ -94,9 +101,20 @@ func handleServePotentialList(w http.ResponseWriter, r *http.Request) {
 
 	db := context.Get(r, "database").(*mgo.Collection)
 
+	var req listRequest
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	var ReportBatch []Report
 
-	if err := db.Find(bson.M{"status": ReportStateAISelected}).Sort("+timestamp").Batch(25).All(&ReportBatch); err != nil {
+	fmt.Print("Offset: ")
+	fmt.Println(req.Offset)
+
+	if err := db.Find(bson.M{"status": ReportStateAISelected}).Sort("+timestamp").Skip(req.Offset).Limit(25).All(&ReportBatch); err != nil {
 		panic(err)
 	}
 
