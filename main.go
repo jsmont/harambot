@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -50,6 +51,7 @@ func handle(w http.ResponseWriter, r *http.Request) {
 func main() {
 	// connect to the database
 	mongoUrl := os.Getenv("SCALINGO_MONGO_URL")
+	fmt.Println(mongoUrl)
 	if mongoUrl == "" {
 		mongoUrl = "localhost"
 	}
