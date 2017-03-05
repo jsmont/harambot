@@ -53,10 +53,10 @@ func main() {
 	mongoUrl := os.Getenv("SCALINGO_MONGO_URL")
 	fmt.Println(mongoUrl)
 	if mongoUrl == "" {
-		mongoUrl = "localhost"
+		mongoUrl = "localhost/harambot"
 	}
 	session, err := mgo.Dial(mongoUrl)
-	db := session.DB("harambot").C("report_info")
+	db := session.DB().C("report_info")
 
 	if err != nil {
 		log.Fatal("cannot dial mongo", err)
