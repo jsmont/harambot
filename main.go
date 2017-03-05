@@ -62,7 +62,7 @@ func main() {
 
 	pageAccessToken := os.Getenv("ACCESS_TOKEN")
 	if pageAccessToken == "" {
-		pageAccessToken = "EAACEdEose0cBANEZA4nMheX6VWrPqUWo2YdzRURFEAhWUYhxmUkaZBqZB1pJ1OAr6eUO2quWN0gRTNZCAVzs176cGV5xT3n1BUV8FjmWyZC6iCHg5rXcW0wdEubVZAxGnMSnW6XG8m5a6D3p2eVoqDSamHbZCqSvf69tJuTNoYSDJwI2e7WwIHLSEMymQvN5RgZD"
+		pageAccessToken = "EAACEdEose0cBANWw65HIuRi7Hvrj4TauhqVGo9HxmvnSysDXZCYZAZAiEis5y8eOovHX5grWxNRj5A16XJDmU3HOw6eTN8D6mvwRN9NRnHQ0t8ghuN5sj5Q4Vg2BBoVZBtHyxeech9sIa7Ms03GyfNcyiaN92mNXvLiZCAZAxcd2yc6CyjvC4HLcFzEOVT7YYZD"
 	}
 
 	go startInputService(db, pageId, pageAccessToken)
