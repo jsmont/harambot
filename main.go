@@ -64,7 +64,7 @@ func main() {
 		pageAccessToken = "EAACEdEose0cBAAEQQwICorU1aKIt069OejnoADBDiUIAudPaZC4SgvAf3lMLutkDFFlvmUOIH9tqw2dH4zFWCml5itx1m01L397Nf63XjAoVlooNZAupjwBLsbZCqM782tYFFNTW3odI8F8EZALT5z1Wm9JSNoj3Kqhjzlue3InU7PdyJKBn"
 	}
 
-	go startInputService(db, pageId, pageAccessToken)
+	//go startInputService(db, pageId, pageAccessToken)
 	go startValidatorService(db)
 
 	// add the handler
