@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -21,14 +22,13 @@ func Adapt(h http.Handler, adapters ...Adapter) http.Handler {
 	return h
 }
 
-func withDB(db *mgo.Session) Adapter {
+func withDB(db *mgo.Collection) Adapter {
 	// return the Adapter
 	return func(h http.Handler) http.Handler {
 		// the adapter (when called) should return a new handler
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// copy the database session
-			dbsession := db.Copy()
-			defer dbsession.Close() // clean up
+			dbsession := db
 			// save it in the mux context
 			context.Set(r, "database", dbsession)
 			// pass execution to the original handler
@@ -58,16 +58,19 @@ func main() {
 
 
 	// connect to the database
-	mongoUrl := os.Getenv("MONGO_URL")
+	mongoUrl := os.Getenv("SCALINGO_MONGO_URL")
+	fmt.Println(mongoUrl)
 	if mongoUrl == "" {
-		mongoUrl = "localhost"
+		mongoUrl = "localhost/harambot"
 	}
-	db, err := mgo.Dial(mongoUrl)
+	session, err := mgo.Dial(mongoUrl)
+	db := session.DB("").C("report_info")
+
 	if err != nil {
 		log.Fatal("cannot dial mongo", err)
 	}
 
-	defer db.Close() // clean up when we’re done
+	defer session.Close() // clean up when we’re done
 	// Adapt our handle function using withDB
 
 	pageId := os.Getenv("PAGE_ID")
@@ -103,7 +106,7 @@ type comment struct {
 }
 
 func handleInsert(w http.ResponseWriter, r *http.Request) {
-	db := context.Get(r, "database").(*mgo.Session)
+	db := context.Get(r, "database").(*mgo.Collection)
 	// decode the request body
 
 	var c comment
@@ -119,7 +122,7 @@ func handleInsert(w http.ResponseWriter, r *http.Request) {
 	c.ID = bson.NewObjectId()
 	c.When = time.Now()
 	// insert it into the database
-	if err := db.DB("harambot").C("comments").Insert(&c); err != nil {
+	if err := db.Insert(&c); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -131,10 +134,10 @@ func handleInsert(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleRead(w http.ResponseWriter, r *http.Request) {
-	db := context.Get(r, "database").(*mgo.Session)
+	db := context.Get(r, "database").(*mgo.Collection)
 	// load the comments
 	var comments []*comment
-	if err := db.DB("harambot").C("comments").
+	if err := db.
 		Find(nil).Sort("-when").Limit(100).All(&comments); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
