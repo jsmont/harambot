@@ -8,7 +8,7 @@ $(document).ready(function(){
         loadPosts(global_offset);
     });
 
-   
+
 });
 
 function loadPosts(offset){
@@ -36,8 +36,8 @@ function loadPosts(offset){
                 </dl>\
                 <div class='text-right col-md-12'>\
                     <a type'button' class='btn btn-primary' href='http://facebook.com/"+a[i].facebookid+"' target='_blank'>Link</a>\
-                    <button type'button' class='btn approved btn-success'>Confirmed Harassment</button>\
-                    <button type='button' class='btn report btn-danger'>Not Harassment</button>\
+                    <button type'button' class='btn approved btn-danger'>Confirmed Harassment</button>\
+                    <button type='button' class='btn report btn-success'>Not Harassment</button>\
                 </div>\
             </div>";
             $("#msgcontainer").append(item);
@@ -61,7 +61,7 @@ function loadPosts(offset){
 
             parent.remove();
         });
-    }, 
+    },
     datatype: "json"});
 
 }
