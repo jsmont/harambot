@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -15,7 +16,8 @@ func getLanguage(text string) string {
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	resp, _ := client.Do(req)
-	//defer resp.Body.Close()
+	fmt.Println(text)
+	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 	jsonBody := map[string]interface{}{}
 	json.Unmarshal(body, &jsonBody)
@@ -30,7 +32,7 @@ func getSentiment(text, language string) string {
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	resp, _ := client.Do(req)
-	//defer resp.Body.Close()
+	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 	jsonBody := map[string]interface{}{}
 	json.Unmarshal(body, &jsonBody)

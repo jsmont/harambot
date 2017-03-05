@@ -58,6 +58,23 @@ func startInputService(db *mgo.Collection, pageId string, pageAccessToken string
 
 func (p *Report) save(db *mgo.Collection) {
 
+	exists := Report{}
+
+	if err := db.Find(bson.M{"facebookid": p.FacebookId}).One(&exists); err != nil {
+		fmt.Println(err)
+		if err := db.Insert(&p); err != nil {
+			panic(err)
+		}
+
+		fmt.Println("Added new report to database")
+	} else {
+		fmt.Println("Report repeated")
+	}
+
+}
+
+func (p *Report) update(db *mgo.Collection) {
+
 	if _, err := db.Upsert(bson.M{"facebookid": p.FacebookId}, p); err != nil {
 		panic(err)
 	}

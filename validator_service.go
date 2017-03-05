@@ -28,7 +28,7 @@ func startValidatorService(db *mgo.Collection) {
 					rep.Status = ReportStateAISelected
 				}
 
-				rep.save(db)
+				rep.update(db)
 			}
 
 			ReportBatch = getPendingReportsBatch(db)
