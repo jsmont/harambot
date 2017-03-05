@@ -61,7 +61,7 @@ func main() {
 
 	pageAccessToken := os.Getenv("ACCESS_TOKEN")
 	if pageAccessToken == "" {
-		pageAccessToken = "EAACEdEose0cBAJZCpPOBzMPDz9jBz757wjlbvtUFCCVeUZBQvANP98TynyWTLMlVPJV8vcBqlPtTQWBG3NiYZCT1YMRQMzuKO4b1fBoUvFFNwMfNZBjlrS2lJM6qWP6N0Hnkait2ErSeSFonOdFwIgoDEe0Ws0omb28qG007urbSURoIIBcopW3Y9ipDDlgZBxMBRhgAZBvgZDZD"
+		pageAccessToken = "EAACEdEose0cBAAEQQwICorU1aKIt069OejnoADBDiUIAudPaZC4SgvAf3lMLutkDFFlvmUOIH9tqw2dH4zFWCml5itx1m01L397Nf63XjAoVlooNZAupjwBLsbZCqM782tYFFNTW3odI8F8EZALT5z1Wm9JSNoj3Kqhjzlue3InU7PdyJKBn"
 	}
 
 	go startInputService(db, pageId, pageAccessToken)
@@ -69,6 +69,7 @@ func main() {
 
 	// add the handler
 	http.Handle("/potentiallist", Adapt(http.HandlerFunc(potentialListHandler), withDB(db), context.ClearHandler))
+	http.Handle("/report", Adapt(http.HandlerFunc(reportHandler), withDB(db), context.ClearHandler))
 	http.Handle("/", http.FileServer(http.Dir("./static/")))
 	// start the server
 	port := os.Getenv("PORT")
@@ -104,6 +105,52 @@ func handleServePotentialList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+}
+
+func reportHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "POST":
+		handleReportChange(w, r)
+	default:
+		http.Error(w, "Not supported", http.StatusMethodNotAllowed)
+	}
+}
+
+func handleReportChange(w http.ResponseWriter, r *http.Request) {
+
+	db := context.Get(r, "database").(*mgo.Collection)
+
+	var change ReportModification
+
+	if err := json.NewDecoder(r.Body).Decode(&change); err != nil {
+
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	var rep Report
+	if err := db.Find(bson.M{"facebookid": change.FacebookId}).One(&rep); err != nil {
+
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+
+	}
+
+	var newStatus int
+
+	switch change.StatusName {
+	case "confirmed":
+		newStatus = ReportStateUserConfirmed
+	case "discarted":
+		newStatus = ReportStateUserDiscarted
+	default:
+		newStatus = ReportStateUnchecked
+
+	}
+
+	rep.Status = newStatus
+
+	rep.update(db)
 }
 
 /*

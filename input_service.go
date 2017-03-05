@@ -18,7 +18,7 @@ const (
 	ReportStateAIDiscarted   = iota
 	ReportStateAISelected    = iota
 	ReportStateUserDiscarted = iota
-	ReportStateUserAccepted  = iota
+	ReportStateUserConfirmed = iota
 )
 
 type Report struct {
@@ -26,6 +26,11 @@ type Report struct {
 	Timestamp  time.Time `json:"timestamp"`
 	FacebookId string    `json:"facebookid"`
 	Status     int       `json:"status"`
+}
+
+type ReportModification struct {
+	FacebookId string `json:"id"`
+	StatusName string `json:"status_name"`
 }
 
 func startInputService(db *mgo.Collection, pageId string, pageAccessToken string) {
