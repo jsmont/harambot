@@ -9,7 +9,7 @@ import (
 )
 
 type User struct {
-	Name string `json:"username"`
+	Name string `json:"name"`
 	Id   string `json:"id"`
 }
 
@@ -22,6 +22,7 @@ const (
 )
 
 type Report struct {
+	Owner      User      `json:"owner"`
 	Message    string    `json:"message"`
 	Timestamp  time.Time `json:"timestamp"`
 	FacebookId string    `json:"facebookid"`

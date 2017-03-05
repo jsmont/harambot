@@ -12,6 +12,7 @@ import (
 type ISO8601Time string
 
 type FacebookComment struct {
+	Owner        User        `json:"from"`
 	Message      string      `json:"message"`
 	Created_time ISO8601Time `json:"created_time"`
 	Id           string      `json:"id"`
@@ -66,7 +67,7 @@ func getFacebookPosts(pageId string, pageAccessToken string, postsPage string) (
 func (p *FacebookPost) getReport() Report {
 
 	t, _ := time.Parse("2006-01-02T15:04:05.999999999-0700", string(p.Created_time))
-	return Report{Message: p.Message, Timestamp: t, FacebookId: p.Id, Status: ReportStateUnchecked}
+	return Report{Message: p.Message, Timestamp: t, FacebookId: p.Id, Status: ReportStateUnchecked, Owner: User{Name: "Anonymous", Id: ""}}
 
 }
 
@@ -96,6 +97,6 @@ func (p *FacebookPost) getComments(pageAccessToken string) ([]FacebookComment, F
 func (c *FacebookComment) getReport() Report {
 
 	t, _ := time.Parse("2006-01-02T15:04:05.999999999-0700", string(c.Created_time))
-	return Report{Message: c.Message, Timestamp: t, FacebookId: c.Id, Status: ReportStateUnchecked}
+	return Report{Message: c.Message, Timestamp: t, FacebookId: c.Id, Status: ReportStateUnchecked, Owner: c.Owner}
 
 }

@@ -65,7 +65,7 @@ func main() {
 	}
 
 	go startInputService(db, pageId, pageAccessToken)
-	//go startValidatorService(db)
+	go startValidatorService(db)
 
 	// add the handler
 	http.Handle("/potentiallist", Adapt(http.HandlerFunc(potentialListHandler), withDB(db), context.ClearHandler))

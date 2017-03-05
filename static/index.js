@@ -6,26 +6,36 @@ $(document).ready(function(){
         console.log(a, typeof a)
         for(var i = 0; i < a.length; i++){
 
-            var item = "<div class='comment-box col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2'>\
+            var item = "<div class='comment-box col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2' data-id="+a[i].facebookid+">\
                 <dl>\
-                    <dt>"+ a[i].username +" | "+ GetFormattedDate(a[i].timestamp) + "</dt>\
+                    <dt>"+ a[i].owner.name +" | "+ GetFormattedDate(a[i].timestamp) + "</dt>\
                     <dd>"+ a[i].message +"</dd>\
                 </dl>\
                 <div class='text-right col-md-12'>\
-                    <button type'button' class='btn approved btn-success'>Approved</button>\
-                    <button type='button' class='btn report btn-danger'>Report</button>\
+                    <button type'button' class='btn approved btn-success'>Confirmed Harassment</button>\
+                    <button type='button' class='btn report btn-danger'>Not Harassment</button>\
                 </div>\
             </div>";
             $("#msgcontainer").append(item);
         };
 
         $(".approved").click(function(){
-            
-            $(this).parent().parent().hide();
+            var parent = $(this).parent().parent();
+            $.post("/report", JSON.stringify({id:  parent.attr("data-id"), status_name: "confirmed"}), function(){
+                parent.hide();
+            }, "application/json");
+
+            parent.remove();
         });
 
+
         $(".report").click(function(){
-            $(this).parent().parent().hide();
+            var parent = $(this).parent().parent();
+            $.post("/report", JSON.stringify({id:  parent.attr("data-id"), status_name: "discarted"}), function(){
+                parent.hide();
+            }, "application/json");
+
+            parent.remove();
         });
     });
 
